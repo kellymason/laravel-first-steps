@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Calculator;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 
 class CalcController extends Controller
 {
@@ -18,13 +19,14 @@ class CalcController extends Controller
 
     private function render($items = null)
     {
-        $c = new Calculator();        
+        Bugsnag::notifyError('SubError', 'Something bad happened');
+        $c = new Calculator();
         if (is_array($items) && isset($items['a']) && isset($items['b']) && isset($items['action'])){
             $action = $items['action'];
             $a = floatval($items['a']);
             $b = floatval($items['b']);
             if ($action == '+'){
-                $result = $c->sum($a, $b);
+                $result = $c->logmsg($a, $b);
             }else if ($action == '-'){
                 $result = $c->diff($a, $b);
             }else if ($action == '*') {
